@@ -20,10 +20,10 @@ class BlenoBindings:
         self._handle = None
         self._aclStream = None
         
-    def startAdvertising(self, name, serviceUuids):
+    def startAdvertising(self, name, serviceUuids, useShortenedLocalName):
         self._advertising = True
         
-        self._gap.startAdvertising(name, serviceUuids)
+        self._gap.startAdvertising(name, serviceUuids, useShortenedLocalName)
 
     def startAdvertisingIBeacon(self, data):
         self._advertising = True

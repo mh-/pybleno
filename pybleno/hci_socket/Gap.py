@@ -22,7 +22,7 @@ class Gap():
         self._hci.on('leScanResponseDataSet', self.onHciLeScanResponseDataSet)
         self._hci.on('leAdvertiseEnableSet', self.onHciLeAdvertiseEnableSet)
 
-    def startAdvertising(self, name, serviceUuids):
+    def startAdvertising(self, name, serviceUuids, useShortenedLocalName):
         #debug('startAdvertising: name = ' + name + ', serviceUuids = ' + JSON.stringify(serviceUuids, null, 2))
     
         advertisementDataLength = 3
@@ -92,11 +92,15 @@ class Gap():
                 advertisementDataOffset += len(serviceUuids128bit[i])
         
         # // name
+        if useShortenedLocalName:
+            adType = 0x08  # 'Shortened Local Name'
+        else:
+            adType = 0x09  # 'Complete Local Name'
         if name and len(name):
             nameBuffer = array.array('B', [ord(elem) for elem in name])
     
             writeUInt8(scanData, 1 + len(nameBuffer), 0)
-            writeUInt8(scanData, 0x09, 1)  # 0x08 results in 'Short Local Name', 0x09 results in 'Complete Local Name'
+            writeUInt8(scanData, adType, 1)
             copy(nameBuffer, scanData, 2)
     
         self.startAdvertisingWithEIRData(advertisementData, scanData)

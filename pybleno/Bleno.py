@@ -70,7 +70,7 @@ class Bleno:
         #debug('disconnect' + clientAddress);
         self.emit('disconnect', [clientAddress]);
 
-    def startAdvertising(self, name, serviceUuids, callback=None):
+    def startAdvertising(self, name, serviceUuids, callback=None, useShortenedLocalName=True):
         if (self.state != 'poweredOn'):
             #var error = new Error('Could not start advertising, state is ' + self.state + ' (not poweredOn)');
             
@@ -91,7 +91,7 @@ class Bleno:
                 undashedServiceUuids.append(UuidUtil.removeDashes(serviceUuids[i]));
         
         #print 'starting advertising %s %s' % (name, undashedServiceUuids) 
-        self._bindings.startAdvertising(name, undashedServiceUuids);
+        self._bindings.startAdvertising(name, undashedServiceUuids, useShortenedLocalName);
 
     def startAdvertisingIBeacon(self, uuid, major, minor, measuredPower, callback=None):
         if (self.state != 'poweredOn'):
