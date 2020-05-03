@@ -24,6 +24,26 @@ class Hci:
 
         self._handleBuffers = {}
 
+        self._advertisementIntervalMin = 0x00A0  # Note: The Advertising_Interval_Min and Advertising_Interval_Max shall not be set to less than 0x00A0 (100 ms)
+        self._advertisementIntervalMax = 0x00A0  # if the Advertising_Type is set to 0x02 (ADV_SCAN_IND) or 0x03 (ADV_NONCONN_IND).
+        self._adv_type = 0x00               # 0x00: ADV_IND (Connectable undirected advertising)
+                                            # 0x01: ADV_DIRECT_IND, high duty cycle (Connectable high duty cycle directed advertising)
+                                            # 0x02: ADV_SCAN_IND (Scannable undirected advertising)
+                                            # 0x03: ADV_NONCONN_IND (Non connectable undirected advertising)
+                                            # 0x04: ADV_DIRECT_IND, low duty cycle (Connectable low duty cycle directed advertising)
+        self._own_addr_type = 0x00          # 0x00: Public device address
+                                            # 0x01: Random device address
+                                            # 0x02: Resolvable private address or public address
+                                            # 0x03: Resolvable private address or random address
+        self._direct_addr_type = 0x00
+        self._direct_addr_uint = 0x00000000
+        self._direct_addr_ushort = 0x0000
+        self._adv_channel_map = 0x07        # bit mask: 1: ch 37, 2: ch 38, 4: ch 39
+        self._adv_filter_policy = 0x00      # 0x00: Allow scan request from any, allow connect request from any
+                                            # 0x01: Allow scan request from white list only, allow connect request from any
+                                            # 0x02: Allow scan request from any, allow connect request from white list only
+                                            # 0x03: Allow scan request from white list only, allow connect request from white list only
+
         self.on('stateChange', self.onStateChange)
 
     def init(self):
@@ -189,6 +209,27 @@ class Hci:
         # console.log('set le event mask - writing: ' + cmd.toString('hex'));
         self.write(cmd)
 
+    def setAdvertisingParams(self, advertisementIntervalMin, advertisementIntervalMax,
+                             adv_type, own_addr_type,
+                             direct_addr_type, direct_addr_uint, direct_addr_ushort,
+                             adv_channel_map, adv_filter_policy):
+        self._advertisementIntervalMin = advertisementIntervalMin  # Note: The Advertising_Interval_Min and Advertising_Interval_Max shall not be set to less than 0x00A0 (100 ms)
+        self._advertisementIntervalMax = advertisementIntervalMax  # if the Advertising_Type is set to 0x02 (ADV_SCAN_IND) or 0x03 (ADV_NONCONN_IND).
+        self._adv_type = adv_type               # 0x00: ADV_IND (Connectable undirected advertising)
+                                                # 0x01: ADV_DIRECT_IND, high duty cycle (Connectable high duty cycle directed advertising)
+                                                # 0x02: ADV_SCAN_IND (Scannable undirected advertising)
+                                                # 0x03: ADV_NONCONN_IND (Non connectable undirected advertising)
+                                                # 0x04: ADV_DIRECT_IND, low duty cycle (Connectable low duty cycle directed advertising)
+        self._own_addr_type = own_addr_type     # 0x00: Public device address
+                                                # 0x01: Random device address
+                                                # 0x02: Resolvable private address or public address
+                                                # 0x03: Resolvable private address or random address
+        self._direct_addr_type = direct_addr_type
+        self._direct_addr_uint = direct_addr_uint
+        self._direct_addr_ushort = direct_addr_ushort
+        self._adv_channel_map = adv_channel_map     # bit mask: 1: ch 37, 2: ch 38, 4: ch 39
+        self._adv_filter_policy = adv_filter_policy
+
     def setAdvertisingParameters(self):
         # cmd = new Buffer(19)
         cmd = array.array('B', [0] * 19)
@@ -201,7 +242,7 @@ class Hci:
         # cmd.writeUInt8(15, 3)
 
         # advertisementInterval = Math.floor((process.env.BLENO_ADVERTISING_INTERVAL ? parseFloat(process.env.BLENO_ADVERTISING_INTERVAL) : 100) * 1.6)
-        advertisementInterval = math.floor(100 * 1.6)
+        # advertisementInterval = math.floor(100 * 1.6)
 
         # # data
         # cmd.writeUInt16LE(advertisementInterval, 4); # min interval
@@ -213,8 +254,12 @@ class Hci:
         # cmd.writeUInt8(0x07, 17)
         # cmd.writeUInt8(0x00, 18)
 
-        struct.pack_into("<BHBHHBBBIHBB", cmd, 0, HCI_COMMAND_PKT, LE_SET_ADVERTISING_PARAMETERS_CMD, 15,
-                         advertisementInterval, advertisementInterval, 0x00, 0x00, 0x00, 0x00, 0x00, 0x07, 0x00)
+        struct.pack_into("<BHBHHBBBIHBB", cmd, 0,
+                         HCI_COMMAND_PKT, LE_SET_ADVERTISING_PARAMETERS_CMD, 15,
+                         self._advertisementIntervalMin, self._advertisementIntervalMax,
+                         self._adv_type, self._own_addr_type, self._direct_addr_type,
+                         self._direct_addr_uint, self._direct_addr_ushort,
+                         self._adv_channel_map, self._adv_filter_policy)
 
         # debug('set advertisement parameters - writing: ' + cmd.toString('hex'))
         # print('set advertise parameters - writing: ' + `[hex(c) for c in cmd]`)

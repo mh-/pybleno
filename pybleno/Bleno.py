@@ -83,6 +83,15 @@ class Bleno:
         # debug('disconnect' + clientAddress);
         self.emit('disconnect', [clientAddress])
 
+    def setAdvertisingParams(self, advertisementIntervalMin, advertisementIntervalMax,
+                             adv_type, own_addr_type,
+                             direct_addr_type, direct_addr_uint, direct_addr_ushort,
+                             adv_channel_map, adv_filter_policy):
+        self._bindings.setAdvertisingParams(advertisementIntervalMin, advertisementIntervalMax,
+                                            adv_type, own_addr_type,
+                                            direct_addr_type, direct_addr_uint, direct_addr_ushort,
+                                            adv_channel_map, adv_filter_policy)
+
     def startAdvertising(self, name, service_uuids=None, callback=None):
         if self.state != 'poweredOn':
             error = Error('Could not start advertising, state is {0} (not poweredOn)'.format(self.state))
