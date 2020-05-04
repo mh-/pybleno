@@ -23,11 +23,11 @@ class BlenoBindings:
 
     def setAdvertisingParams(self, advertisementIntervalMin, advertisementIntervalMax,
                              adv_type, own_addr_type,
-                             direct_addr_type, direct_addr_uint, direct_addr_ushort,
+                             direct_addr_type, direct_addr,
                              adv_channel_map, adv_filter_policy):
         self._hci.setAdvertisingParams(advertisementIntervalMin, advertisementIntervalMax,
                                        adv_type, own_addr_type,
-                                       direct_addr_type, direct_addr_uint, direct_addr_ushort,
+                                       direct_addr_type, direct_addr,
                                        adv_channel_map, adv_filter_policy)
 
     def startAdvertising(self, name, serviceUuids):
