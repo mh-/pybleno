@@ -83,6 +83,9 @@ class Bleno:
         # debug('disconnect' + clientAddress);
         self.emit('disconnect', [clientAddress])
 
+    def setRandomAddress(self, bdaddr):
+        self._bindings.setRandomAddress(bdaddr)
+
     def setAdvertisingParams(self, advertisementIntervalMin, advertisementIntervalMax,
                              adv_type, own_addr_type,
                              direct_addr_type, direct_addr,

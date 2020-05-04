@@ -21,6 +21,9 @@ class BlenoBindings:
         self._handle = None
         self._aclStream = None
 
+    def setRandomAddress(self, bdaddr):
+        self._hci.setRandomAddress(bdaddr)
+
     def setAdvertisingParams(self, advertisementIntervalMin, advertisementIntervalMax,
                              adv_type, own_addr_type,
                              direct_addr_type, direct_addr,
