@@ -83,6 +83,9 @@ class Bleno:
         # debug('disconnect' + clientAddress);
         self.emit('disconnect', [clientAddress])
 
+    def setRandomAddress(self, bdaddr):
+        self._bindings.setRandomAddress(bdaddr)
+
     def startAdvertising(self, name, service_uuids=None, callback=None):
         if self.state != 'poweredOn':
             error = Error('Could not start advertising, state is {0} (not poweredOn)'.format(self.state))

@@ -189,6 +189,14 @@ class Hci:
         # console.log('set le event mask - writing: ' + cmd.toString('hex'));
         self.write(cmd)
 
+    def setRandomAddress(self, bdaddr):
+        cmd = array.array('B', [0] * 10)
+
+        struct.pack_into("<BHBBBBBBB", cmd, 0,
+                         HCI_COMMAND_PKT, LE_SET_RANDOM_ADDRESS_CMD, 6,
+                         bdaddr[5], bdaddr[4], bdaddr[3], bdaddr[2], bdaddr[1], bdaddr[0])
+        self.write(cmd)
+
     def setAdvertisingParameters(self):
         # cmd = new Buffer(19)
         cmd = array.array('B', [0] * 19)

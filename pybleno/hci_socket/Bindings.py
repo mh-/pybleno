@@ -21,6 +21,9 @@ class BlenoBindings:
         self._handle = None
         self._aclStream = None
 
+    def setRandomAddress(self, bdaddr):
+        self._hci.setRandomAddress(bdaddr)
+
     def startAdvertising(self, name, serviceUuids):
         self._advertising = True
 
