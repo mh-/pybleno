@@ -24,6 +24,15 @@ class BlenoBindings:
     def setRandomAddress(self, bdaddr):
         self._hci.setRandomAddress(bdaddr)
 
+    def setAdvertisingParams(self, advertisementIntervalMin, advertisementIntervalMax,
+                             adv_type, own_addr_type,
+                             direct_addr_type, direct_addr,
+                             adv_channel_map, adv_filter_policy):
+        self._hci.setAdvertisingParams(advertisementIntervalMin, advertisementIntervalMax,
+                                       adv_type, own_addr_type,
+                                       direct_addr_type, direct_addr,
+                                       adv_channel_map, adv_filter_policy)
+
     def startAdvertising(self, name, serviceUuids):
         self._advertising = True
 
