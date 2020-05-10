@@ -68,6 +68,9 @@ class BlenoBindings:
         if self._handle:
             self._hci.readRssi(self._handle)
 
+    def readAdvertisingChannelTxPowerLevel(self):
+        self._hci.readAdvertisingChannelTxPowerLevel()
+
     def init(self):
         # self.onSigIntBinded = this.onSigInt
 
@@ -86,6 +89,7 @@ class BlenoBindings:
         self._hci.on('leConnComplete', self.onLeConnComplete)
         self._hci.on('leConnUpdateComplete', self.onLeConnUpdateComplete)
         self._hci.on('rssiRead', self.onRssiRead)
+        self._hci.on('advertisingChannelTxPowerRead', self.onAdvertisingChannelTxPowerRead)
         self._hci.on('disconnComplete', self.onDisconnComplete)
         self._hci.on('encryptChange', self.onEncryptChange)
         self._hci.on('leLtkNegReply', self.onLeLtkNegReply)
@@ -175,6 +179,9 @@ class BlenoBindings:
 
     def onRssiRead(self, handle, rssi):
         self.emit('rssiUpdate', [rssi])
+
+    def onAdvertisingChannelTxPowerRead(self, tx_power_level):
+        self.emit('advertisingChannelTxPowerUpdate', [tx_power_level])
 
     def onAclDataPkt(self, handle, cid, data):
         if (self._handle == handle and self._aclStream):

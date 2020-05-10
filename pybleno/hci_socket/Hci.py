@@ -366,6 +366,19 @@ class Hci:
         # debug('read rssi - writing: ' + cmd.toString('hex'))
         self.write(cmd)
 
+    def readAdvertisingChannelTxPowerLevel(self):
+        cmd = array.array('B', [0] * 4)
+
+        # header
+        writeUInt8(cmd, HCI_COMMAND_PKT, 0)
+        writeUInt16LE(cmd, LE_READ_ADVERTISING_CHANNEL_TX_POWER_CMD, 1)
+
+        # length
+        writeUInt8(cmd, 0x00, 3)
+
+        # debug('read Advertising Channel TX Power Level - writing: ' + cmd.toString('hex'))
+        self.write(cmd)
+
     def writeAclDataPkt(self, handle, cid, data):
         pkt = array.array('B', [0] * (9 + len(data)))
 
@@ -557,6 +570,10 @@ class Hci:
 
             # debug('\t\t\thandle = ' + handle)
             self.emit('leLtkNegReply', [handle])
+        elif cmd == LE_READ_ADVERTISING_CHANNEL_TX_POWER_CMD:
+            if status == 0:
+                tx_power_level = readInt8(result, 0)
+                self.emit('advertisingChannelTxPowerRead', [tx_power_level])
 
     def processLeMetaEvent(self, eventType, status, data):
         if eventType == EVT_LE_CONN_COMPLETE:
