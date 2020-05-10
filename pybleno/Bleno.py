@@ -51,6 +51,7 @@ class Bleno:
         self._bindings.on('disconnect', self.onDisconnect)
 
         self._bindings.on('rssiUpdate', self.onRssiUpdate)
+        self._bindings.on('advertisingChannelTxPowerUpdate', self.onAdvertisingChannelTxPowerUpdate)
 
     def start(self):
         self._bindings.init()
@@ -193,6 +194,14 @@ class Bleno:
 
     def onRssiUpdate(self, rssi):
         self.emit('rssiUpdate', [rssi])
+
+    def readAdvertisingChannelTxPowerLevel(self):
+        self._bindings.readAdvertisingChannelTxPowerLevel()
+
+    def onAdvertisingChannelTxPowerUpdate(self, tx_power_level):
+        self.emit('advertisingChannelTxPowerUpdate', [tx_power_level])
+        # Note: On Raspberry Pi Zero W, this returns 12,
+        # even though max. TX power for Advertising is specified as 10 dBm (?!)
 
 
 Emit.Patch(Bleno)
